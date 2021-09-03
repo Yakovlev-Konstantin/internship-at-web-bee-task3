@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 2vw;
+}
+
+body,
+input {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: large;
+}
+
+::placeholder {
+  font-size: larger;
+}
+
+#todo-list-example {
+  /* color: blue; */
+}
+
+.newTask-input {
+  width: 25%;
+  padding: 0.4em;
+}
+
+.changingTask-input {
+  width: 15%;
+  padding: 0.4em;
+}
+
+button {
+  padding: 0.4em 1.6em;
+  /* margin-right: 1em; */
+  font-size: large;
+}
+
+span {
+  margin-right: 40px;
+}
+
+label {
+  font-size: x-large;
+}
+
+form {
+  margin-bottom: 32px;
+}
+
+li {
+  margin-bottom: 12px;
+}
