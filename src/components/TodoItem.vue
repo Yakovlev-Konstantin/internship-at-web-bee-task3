@@ -54,7 +54,23 @@ export default {
 </script>
 
 <style scoped>
-/* .item {
-  background: red;
-} */
+input {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: large;
+}
+::placeholder {
+  font-size: larger;
+}
+.changingTask-input {
+  width: 15%;
+  padding: 0.4em;
+}
+button {
+  padding: 0.4em 1.6em;
+  /* margin-right: 1em; */
+  font-size: large;
+}
+span {
+  margin-right: 40px;
+}
 </style>

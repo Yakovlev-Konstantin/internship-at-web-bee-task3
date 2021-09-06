@@ -14,8 +14,8 @@
       <li v-for="(todo, index) in filteredTodos" v-bind:key="todo.id">
         <TodoItem
           v-bind:title="todo.title"
-          v-on:remove="todos.splice(index, 1)"
-          v-on:savechange="todo.title = $event"
+          v-on:remove="remove(index)"
+          v-on:savechange="savechange(todo, $event)"
         />
       </li>
     </ul>
@@ -30,6 +30,7 @@ export default {
   components: {
     TodoItem,
   },
+
   data() {
     return {
       newTodoText: "",
@@ -58,13 +59,23 @@ export default {
       nextTodoId: 6,
     };
   },
+
   methods: {
     addNewTodo: function() {
       this.todos.push({
         id: this.nextTodoId++,
         title: this.newTodoText,
       });
+      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
       this.newTodoText = "";
+    },
+    remove: function(index) {
+      this.todos.splice(index, 1);
+      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
+    },
+    savechange: function(todo, event) {
+      todo.title = event;
+      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
     },
   },
   computed: {
@@ -76,5 +87,48 @@ export default {
       });
     },
   },
+
+  mounted() {
+    if (
+      !localStorage.getItem("listOfTodos") ||
+      localStorage.getItem("listOfTodos") === "[]"
+    ) {
+      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
+      return;
+    }
+    this.todos = JSON.parse(localStorage.getItem("listOfTodos"));
+    this.nextTodoId = this.todos[this.todos.length - 1].id + 1;
+  },
 };
 </script>
+
+<style scoped>
+input {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: large;
+}
+::placeholder {
+  font-size: larger;
+}
+#todo-list-example {
+  /* color: blue; */
+}
+.newTask-input {
+  width: 25%;
+  padding: 0.4em;
+}
+button {
+  padding: 0.4em 1.6em;
+  /* margin-right: 1em; */
+  font-size: large;
+}
+label {
+  font-size: x-large;
+}
+form {
+  margin-bottom: 32px;
+}
+li {
+  margin-bottom: 12px;
+}
+</style>
