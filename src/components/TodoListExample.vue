@@ -1,21 +1,16 @@
 <template>
   <div id="todo-list-example">
-    <form v-on:submit.prevent="addNewTodo">
-      <label for="new-todo">Задача: </label>
-      <input
-        v-model="newTodoText"
-        id="new-todo"
-        placeholder="Введите Вашу новую задачу"
-        class="newTask-input"
-      />
-      <button>Добавить</button>
-    </form>
+    <NewTodoForm
+      @createTodo="addNewTodo()"
+      :newTodoText="newTodoText"
+      @newTodoText:update="newTodoText = $event"
+    />
     <ul>
-      <li v-for="(todo, index) in filteredTodos" v-bind:key="todo.id">
+      <li v-for="todo in filteredTodos" :key="todo.id">
         <TodoItem
-          v-bind:title="todo.title"
-          v-on:remove="remove(index)"
-          v-on:savechange="savechange(todo, $event)"
+          :title="todo.title"
+          @remove="remove(todo.id)"
+          @savechange="saveChange(todo, $event)"
         />
       </li>
     </ul>
@@ -24,11 +19,13 @@
 
 <script>
 import TodoItem from "./TodoItem";
+import NewTodoForm from "./NewTodoForm";
 
 export default {
   name: "TodoListExample",
   components: {
     TodoItem,
+    NewTodoForm,
   },
 
   data() {
@@ -56,25 +53,29 @@ export default {
           title: "Почитать книгу",
         },
       ],
-      nextTodoId: 6,
     };
   },
 
   methods: {
     addNewTodo: function() {
       this.todos.push({
-        id: this.nextTodoId++,
+        id: this.nextTodoId,
         title: this.newTodoText,
       });
-      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
+      this.saveItems();
       this.newTodoText = "";
     },
-    remove: function(index) {
-      this.todos.splice(index, 1);
-      localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
+    remove: function(id) {
+      this.todos = this.todos.filter((todo) => {
+        return todo.id != id;
+      });
+      this.saveItems();
     },
-    savechange: function(todo, event) {
+    saveChange: function(todo, event) {
       todo.title = event;
+      this.saveItems();
+    },
+    saveItems: function() {
       localStorage.setItem("listOfTodos", JSON.stringify(this.todos));
     },
   },
@@ -85,6 +86,10 @@ export default {
       return this.todos.filter((todo) => {
         return todo.title.includes(this.newTodoText);
       });
+    },
+    nextTodoId() {
+      if (!this.todos || this.todos.length == 0) return 1;
+      return this.todos[this.todos.length - 1].id + 1;
     },
   },
 
@@ -97,7 +102,6 @@ export default {
       return;
     }
     this.todos = JSON.parse(localStorage.getItem("listOfTodos"));
-    this.nextTodoId = this.todos[this.todos.length - 1].id + 1;
   },
 };
 </script>
@@ -113,10 +117,7 @@ input {
 #todo-list-example {
   /* color: blue; */
 }
-.newTask-input {
-  width: 25%;
-  padding: 0.4em;
-}
+
 button {
   padding: 0.4em 1.6em;
   /* margin-right: 1em; */

@@ -1,22 +1,25 @@
 <template>
   <div class="item">
-    <span v-if="!isbeingchanged">{{ title }}</span>
-    <button v-if="!isbeingchanged" v-on:click="onChange">
-      Изменить
-    </button>
-    <input
-      v-if="isbeingchanged"
-      v-model="changedTodoText"
-      placeholder="Например, покормить кота"
-      class="changingTask-input"
-    />
-    <button v-if="isbeingchanged" v-on:click="onSave">
-      Сохранить
-    </button>
-    <button v-if="isbeingchanged" v-on:click="onCancel">
-      Отменить изменения
-    </button>
-    <button v-on:click="$emit('remove')">Удалить задачу</button>
+    <template v-if="!isBeingChanged">
+      <span>{{ title }}</span>
+      <button @click="onChange">
+        Изменить
+      </button>
+    </template>
+    <template v-else>
+      <input
+        v-model="changedTodoText"
+        placeholder="Например, покормить кота"
+        class="changingTask-input"
+      />
+      <button @click="onSave">
+        Сохранить
+      </button>
+      <button @click="onCancel">
+        Отменить изменения
+      </button>
+    </template>
+    <button @click="$emit('remove')">Удалить задачу</button>
   </div>
 </template>
 
@@ -29,12 +32,12 @@ export default {
   data() {
     return {
       changedTodoText: "",
-      isbeingchanged: false,
+      isBeingChanged: false,
     };
   },
   methods: {
     stateBeingChangedSwitch: function() {
-      this.isbeingchanged = !this.isbeingchanged;
+      this.isBeingChanged = !this.isBeingChanged;
     },
     onSave() {
       this.$emit("savechange", this.changedTodoText);
@@ -42,7 +45,6 @@ export default {
     },
     onCancel() {
       this.changedTodoText = "";
-      // this.stateBeingChangedSwitch;
       this.stateBeingChangedSwitch();
     },
     onChange() {
